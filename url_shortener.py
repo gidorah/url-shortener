@@ -13,7 +13,9 @@ def _get_uuid():
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
-connect(host="mongodb://127.0.0.1:27017/url_shortener")
+
+def init_db(host="mongodb://127.0.0.1:27017/url_shortener", **kwargs):
+    connect(host=host, **kwargs)
 
 
 class Url(Document):
@@ -121,4 +123,5 @@ def index():
 
 
 if __name__ == "__main__":
+    init_db()
     app.run()

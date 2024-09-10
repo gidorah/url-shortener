@@ -1,5 +1,7 @@
-flask
-mongoengine
-shortuuid
-jsonify
-validators
+flask==3.0.3
+mongoengine==0.29.0
+shortuuid==1.0.13
+jsonify==0.5
+validators==0.34.0
+pytest==8.3.2
+mongomock==3.23.0
