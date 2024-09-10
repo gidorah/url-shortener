@@ -1,5 +1,12 @@
 from flask import Flask, request, jsonify, redirect, render_template
-from mongoengine import Document, StringField, IntField, SequenceField, DateTimeField, connect
+from mongoengine import (
+    Document,
+    StringField,
+    IntField,
+    SequenceField,
+    DateTimeField,
+    connect,
+)
 import shortuuid
 from datetime import datetime
 import validators
@@ -13,6 +20,7 @@ def _get_uuid():
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
+
 
 def init_db(host="mongodb://127.0.0.1:27017/url_shortener", **kwargs):
     connect(host=host, **kwargs)
@@ -45,9 +53,16 @@ def create_url():
         return "Bad Request", 400
 
     create_time = datetime.now()
-    new_url = Url(url=original_url, short_code=_get_uuid(), created_at=create_time, updated_at=create_time)
+    new_url = Url(
+        url=original_url,
+        short_code=_get_uuid(),
+        created_at=create_time,
+        updated_at=create_time,
+    )
+
     if Url.objects(short_code=new_url.short_code):
         return "Bad Request", 400
+
     new_url.save()
     return jsonify(new_url.to_dict()), 201
 
@@ -107,7 +122,8 @@ def get_stats(short_url):
     url_dict["access_count"] = url.access_count
     return jsonify(url_dict), 200
 
-@app.route('/<short_code>')
+
+@app.route("/<short_code>")
 def redirect_to_url(short_code):
     urls = Url.objects(short_code=short_code)
     if not urls:
@@ -119,9 +135,10 @@ def redirect_to_url(short_code):
 
     return redirect(url.url)
 
-@app.route('/')
+
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
 if __name__ == "__main__":
