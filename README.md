@@ -11,6 +11,8 @@ The API allows users to perform the following operations:
 - Delete an existing short URL
 - Get statistics on the short URL (e.g., number of times accessed)
 
+An index page (AI generated) added to test url shortener. It can be reached on http://127.0.0.1:5000.
+
 ## Tech Stack
 
 Used Flask as web framework and MongoDB as DB.
