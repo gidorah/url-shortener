@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect, render_template
 from mongoengine import Document, StringField, IntField, SequenceField, DateTimeField, connect
 import shortuuid
 from datetime import datetime
@@ -34,7 +34,6 @@ class Url(Document):
             "created_at": self.created_at,
             "updated_at": self.updated_at,
         }
-
 
 
 @app.route("/shorten", methods=["POST"])
@@ -78,6 +77,7 @@ def update_url(short_url):
 
     return jsonify(url.to_dict()), 200
 
+
 @app.route("/shorten/<short_url>", methods=["DELETE"])
 def delete_url(short_url):
     urls = Url.objects(short_code=short_url)
@@ -91,6 +91,7 @@ def delete_url(short_url):
 
     return "No Content", 204
 
+
 @app.route("/shorten/<short_url>/stats", methods=["GET"])
 def get_stats(short_url):
     urls = Url.objects(short_code=short_url)
@@ -101,6 +102,22 @@ def get_stats(short_url):
     url_dict = url.to_dict()
     url_dict["access_count"] = url.access_count
     return jsonify(url_dict), 200
+
+@app.route('/<short_code>')
+def redirect_to_url(short_code):
+    urls = Url.objects(short_code=short_code)
+    if not urls:
+        return "Not Found", 404
+
+    url = urls[0]
+    url.access_count += 1
+    url.save()
+
+    return redirect(url.url)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 if __name__ == "__main__":
