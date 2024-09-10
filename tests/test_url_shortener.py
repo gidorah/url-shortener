@@ -1,5 +1,3 @@
-import warnings
-
 import mongomock
 import pytest
 from flask import json
