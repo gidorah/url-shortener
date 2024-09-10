@@ -46,6 +46,8 @@ def create_url():
 
     create_time = datetime.now()
     new_url = Url(url=original_url, short_code=_get_uuid(), created_at=create_time, updated_at=create_time)
+    if Url.objects(short_code=new_url.short_code):
+        return "Bad Request", 400
     new_url.save()
     return jsonify(new_url.to_dict()), 201
 
