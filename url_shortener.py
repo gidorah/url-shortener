@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, redirect, render_template
 from mongoengine import connect
 from datetime import datetime
 import validators
-from models import Url
+from models import CompactUrl
 from flask_pydantic import validate
 from schemas import UrlCreateSchema, UrlResponseSchema, UrlStatsResponseSchema
 
@@ -18,9 +18,9 @@ def init_db(host="mongodb://127.0.0.1:27017/url_shortener", **kwargs):
 @app.route("/shorten", methods=["POST"])
 @validate()
 def create_url(body: UrlCreateSchema):
-    new_url = Url(**body.dict())
+    new_url = CompactUrl(**body.dict())
 
-    if Url.objects(short_code=new_url.short_code):
+    if CompactUrl.objects(short_code=new_url.short_code):
         return "Bad Request", 400
 
     # TODO: Schema üzerinden yapmanın bir yolunu bul
@@ -34,7 +34,7 @@ def create_url(body: UrlCreateSchema):
 @app.route("/shorten/<short_url>", methods=["GET"])
 @validate()
 def get_original_url(short_url):
-    urls = Url.objects(short_code=short_url)
+    urls = CompactUrl.objects(short_code=short_url)
 
     if not urls:
         return "Not Found", 404
@@ -48,7 +48,7 @@ def get_original_url(short_url):
 @app.route("/shorten/<short_url>", methods=["PUT"])
 @validate()
 def update_url(short_url, body: UrlCreateSchema):
-    urls = Url.objects(short_code=short_url)
+    urls = CompactUrl.objects(short_code=short_url)
     if not urls:
         return "not found", 404
 
@@ -63,7 +63,7 @@ def update_url(short_url, body: UrlCreateSchema):
 @app.route("/shorten/<short_url>", methods=["DELETE"])
 @validate()
 def delete_url(short_url):
-    urls = Url.objects(short_code=short_url)
+    urls = CompactUrl.objects(short_code=short_url)
 
     if not urls:
         return "not found", 404
@@ -77,7 +77,7 @@ def delete_url(short_url):
 
 @app.route("/shorten/<short_url>/stats", methods=["GET"])
 def get_stats(short_url):
-    urls = Url.objects(short_code=short_url)
+    urls = CompactUrl.objects(short_code=short_url)
     if not urls:
         return "Not Found", 404
 
@@ -87,7 +87,7 @@ def get_stats(short_url):
 
 @app.route("/<short_code>")
 def redirect_to_url(short_code):
-    urls = Url.objects(short_code=short_code)
+    urls = CompactUrl.objects(short_code=short_code)
     if not urls:
         return "Not Found", 404
 

@@ -2,7 +2,7 @@ import mongomock
 import pytest
 from flask import json
 
-from url_shortener import app, Url, connect
+from url_shortener import app, CompactUrl, connect
 
 
 @pytest.fixture
@@ -16,7 +16,7 @@ def client():
 def setup_db():
     connect("mongoengine_test", mongo_client_class=mongomock.MongoClient)
     yield
-    Url.drop_collection()
+    CompactUrl.drop_collection()
 
 
 def test_create_url(client):

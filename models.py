@@ -30,7 +30,7 @@ def _get_uuid():
     return shortuuid.ShortUUID().random(length=SHORT_CODE_LEN)
 
 
-class Url(Document):
+class CompactUrl(Document):
     id = SequenceField(primary_key=True)
     url = StringField(required=True)
     short_code = UUIDField(
