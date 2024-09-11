@@ -1,3 +1,5 @@
+import datetime
+
 from mongoengine import (
     Document,
     StringField,
@@ -36,6 +38,6 @@ class CompactUrl(Document):
     short_code = UUIDField(
         required=True, max_length=SHORT_CODE_LEN, min_length=SHORT_CODE_LEN, unique=True
     )
-    created_at = DateTimeField()  # TODO: required eklemen gerekiyor
-    updated_at = DateTimeField()
+    created_at = DateTimeField(required=True, default=datetime.datetime.now())
+    updated_at = DateTimeField(default=datetime.datetime.now())
     access_count = IntField(required=True, default=0)

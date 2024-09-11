@@ -23,10 +23,6 @@ def create_url(body: UrlCreateSchema):
     if CompactUrl.objects(short_code=new_url.short_code):
         return "Bad Request", 400
 
-    # TODO: Schema üzerinden yapmanın bir yolunu bul
-    new_url.created_at = datetime.now()
-    new_url.updated_at = datetime.now()
-
     new_url.save()
     return jsonify(UrlResponseSchema.from_orm(new_url).dict()), 201
 
