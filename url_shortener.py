@@ -30,12 +30,11 @@ def create_url(body: UrlCreateSchema):
 @app.route("/shorten/<short_url>", methods=["GET"])
 @validate()
 def get_original_url(short_url):
-    urls = CompactUrl.objects(short_code=short_url)
+    url = CompactUrl.objects(short_code=short_url).first()
 
-    if not urls:
+    if not url:
         return "Not Found", 404
 
-    url = urls[0]
     url.access_count = url.access_count + 1
     url.save()
     return jsonify(UrlResponseSchema.from_orm(url).dict()), 200
@@ -44,11 +43,11 @@ def get_original_url(short_url):
 @app.route("/shorten/<short_url>", methods=["PUT"])
 @validate()
 def update_url(short_url, body: UrlCreateSchema):
-    urls = CompactUrl.objects(short_code=short_url)
-    if not urls:
+    url = CompactUrl.objects(short_code=short_url).first()
+
+    if not url:
         return "not found", 404
 
-    url = urls[0]
     url.url = body.url
     url.updated_at = datetime.now()
     url.save()
@@ -59,12 +58,11 @@ def update_url(short_url, body: UrlCreateSchema):
 @app.route("/shorten/<short_url>", methods=["DELETE"])
 @validate()
 def delete_url(short_url):
-    urls = CompactUrl.objects(short_code=short_url)
+    url = CompactUrl.objects(short_code=short_url).first()
 
-    if not urls:
+    if not url:
         return "not found", 404
 
-    url = urls[0]
     url.delete()
     url.save()
 
@@ -73,21 +71,19 @@ def delete_url(short_url):
 
 @app.route("/shorten/<short_url>/stats", methods=["GET"])
 def get_stats(short_url):
-    urls = CompactUrl.objects(short_code=short_url)
-    if not urls:
+    url = CompactUrl.objects(short_code=short_url).first()
+    if not url:
         return "Not Found", 404
 
-    url = urls[0]
     return jsonify(UrlStatsResponseSchema.from_orm(url).dict()), 200
 
 
 @app.route("/<short_code>")
 def redirect_to_url(short_code):
-    urls = CompactUrl.objects(short_code=short_code)
-    if not urls:
+    url = CompactUrl.objects(short_code=short_code).first()
+    if not url:
         return "Not Found", 404
 
-    url = urls[0]
     url.access_count += 1
     url.save()
 
