@@ -4,7 +4,7 @@ from datetime import datetime
 import validators
 from models import Url
 from flask_pydantic import validate
-from schemas import UrlCreateSchema, UrlCreateResponseSchema, UrlStatsResponseSchema
+from schemas import UrlCreateSchema, UrlResponseSchema, UrlStatsResponseSchema
 
 
 app = Flask(__name__)
@@ -28,7 +28,7 @@ def create_url(body: UrlCreateSchema):
     new_url.updated_at = datetime.now()
 
     new_url.save()
-    return jsonify(UrlCreateResponseSchema.from_orm(new_url).dict()), 201
+    return jsonify(UrlResponseSchema.from_orm(new_url).dict()), 201
 
 
 @app.route("/shorten/<short_url>", methods=["GET"])
@@ -42,7 +42,7 @@ def get_original_url(short_url):
     url = urls[0]
     url.access_count = url.access_count + 1
     url.save()
-    return jsonify(UrlCreateResponseSchema.from_orm(url).dict()), 200
+    return jsonify(UrlResponseSchema.from_orm(url).dict()), 200
 
 
 @app.route("/shorten/<short_url>", methods=["PUT"])
@@ -57,7 +57,7 @@ def update_url(short_url, body: UrlCreateSchema):
     url.updated_at = datetime.now()
     url.save()
 
-    return jsonify(UrlCreateResponseSchema.from_orm(url).dict()), 200
+    return jsonify(UrlResponseSchema.from_orm(url).dict()), 200
 
 
 @app.route("/shorten/<short_url>", methods=["DELETE"])

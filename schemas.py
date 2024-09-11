@@ -6,7 +6,7 @@ class UrlCreateSchema(BaseModel):
     url: HttpUrl = Field(..., example="http://example.com")
 
 
-class UrlCreateResponseSchema(UrlCreateSchema):
+class UrlResponseSchema(UrlCreateSchema):
     id: int = Field(...)
     short_code: str = Field(...)
     created_at: datetime = Field(...)
@@ -16,5 +16,5 @@ class UrlCreateResponseSchema(UrlCreateSchema):
         orm_mode = True
 
 
-class UrlStatsResponseSchema(UrlCreateResponseSchema):
+class UrlStatsResponseSchema(UrlResponseSchema):
     access_count: int = Field(...)
