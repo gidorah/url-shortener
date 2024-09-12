@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, redirect, render_template
 from mongoengine import connect
 from datetime import datetime
-import validators
 from models import CompactUrl
 from flask_pydantic import validate
 from schemas import UrlCreateSchema, UrlResponseSchema, UrlStatsResponseSchema
